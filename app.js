@@ -12,7 +12,6 @@ app.set('view engine', 'pug');
 const linksArray = linksFeed.feeds;
 // async await
 let RSSArray = [];
-let 
 (async () => {
   const linksArrayPromises = linksArray.map(link => {
     return new Promise(async linkResolve => {
