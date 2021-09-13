@@ -3,34 +3,40 @@ const app = express();
 const linksFeed = require('./feeds');
 const { parse } = require('rss-to-json');
 
-
 app.set('views', './views');
 app.set('view engine', 'pug');
 
-// array of links
-
 const linksArray = linksFeed.feeds;
-// async await
 let RSSArray = [];
-(async () => {
+
+app.get('/', async (req, res) => {
   const linksArrayPromises = linksArray.map(link => {
     return new Promise(async linkResolve => {
       const rss = await parse(link);
-      RSSArray.push(rss);
+      RSSArray.push(...rss.items);
       linkResolve();
     });
   });
   await Promise.all(linksArrayPromises);
-  console.log(RSSArray);
+  const sortedRSSArray = RSSArray.sort((a, b) => b.published - a.published);
 
-})();
+  const uniqueArray = sortedRSSArray.reduce((accumulator, currentValue) => {
+    if (accumulator.some(item => item.title === currentValue.title)) {
+      return accumulator;
+    } else {
+      return accumulator.concat(currentValue);
+    }
+  }, [])
 
-
-
-app.get('/', (req, res) => {
+  const firstTenUniqueItems = uniqueArray.slice(0,10);
+  console.log(firstTenUniqueItems);
+  firstTenUniqueItems.forEach(element => {
+    time = new Date(element.published)
+    console.log(time.getFullYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes(), time.getSeconds(), element.title);
+  });
   res.render('index', {
-     title: 'BNU Testcase',
-     ar
+    title: 'BNU Testcase',
+    firstTenUniqueItems,
   });
 });
 
