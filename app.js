@@ -29,11 +29,7 @@ app.get('/', async (req, res) => {
   }, [])
 
   const firstTenUniqueItems = uniqueArray.slice(0,10);
-  console.log(firstTenUniqueItems);
-  firstTenUniqueItems.forEach(element => {
-    time = new Date(element.published)
-    console.log(time.getFullYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes(), time.getSeconds(), element.title);
-  });
+
   res.render('index', {
     title: 'BNU Testcase',
     firstTenUniqueItems,
